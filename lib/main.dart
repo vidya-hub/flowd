@@ -1,3 +1,4 @@
+import 'package:flowd/painters/screens/flow_paint_region.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -30,7 +31,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Column(
         children: [
           Row(
@@ -42,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   vertical: 20,
                 ),
                 child: Card(
-                  color: Colors.white,
+                  color: Colors.blueGrey,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -70,8 +74,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-              )
+              ),
             ],
+          ),
+          Container(
+            height: height * 0.8,
+            width: width * 0.8,
+            color: Colors.grey.shade800,
+            child: const FlowPaintRegion(),
           )
         ],
       ),

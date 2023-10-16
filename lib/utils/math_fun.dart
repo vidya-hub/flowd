@@ -42,4 +42,16 @@ class MathFun {
     }
     return existingOffset;
   }
+
+  static Offset getPointWithAngleWithDistance({
+    required double degrees,
+    required double distance,
+    required Offset offset,
+  }) {
+    Offset newPoint = Offset(
+      offset.dx + distance * math.cos(getRadians(degrees)),
+      offset.dy + distance * math.sin(getRadians(degrees)),
+    );
+    return newPoint;
+  }
 }
