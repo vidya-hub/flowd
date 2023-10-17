@@ -42,17 +42,17 @@ class PainterFun {
       canvas.drawLine(
         arrowPoint.arrowLIne.first.os(size),
         arrowPoint.arrowLIne.last.os(size),
-        linePaint,
+        (arrowPoint.hovered || arrowPoint.selected) ? pointPaint : linePaint,
       );
       canvas.drawLine(
         arrowPoint.arrowLIne.last.os(size),
         arrowPoint.leftTipPoint.os(size),
-        linePaint,
+        (arrowPoint.hovered || arrowPoint.selected) ? pointPaint : linePaint,
       );
       canvas.drawLine(
         arrowPoint.arrowLIne.last.os(size),
         arrowPoint.rightTipPoint.os(size),
-        linePaint,
+        (arrowPoint.hovered || arrowPoint.selected) ? pointPaint : linePaint,
       );
     }
   }
@@ -101,5 +101,14 @@ class PainterFun {
       endingRightOne,
       linePaint,
     );
+  }
+
+  static bool isPointBetween({
+    required Offset startPoint,
+    required Offset endPoint,
+    required Offset hoverPoint,
+  }) {
+    Rect boundingBox = Rect.fromPoints(startPoint, endPoint);
+    return boundingBox.contains(hoverPoint);
   }
 }

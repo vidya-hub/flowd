@@ -1,21 +1,42 @@
 import 'package:flutter/material.dart';
 
-class DrawingArrowPoints {
+class DrawingPoint {
   Offset startingPoint;
   ArrowPoint? arrowPoint;
-  DrawingArrowPoints({
-    required this.startingPoint,
-    this.arrowPoint,
-  });
+  DrawingPoint({required this.startingPoint, this.arrowPoint});
+
+  DrawingPoint copyWith({Offset? startingPoint, ArrowPoint? arrowPoint}) {
+    return DrawingPoint(
+      startingPoint: startingPoint ?? this.startingPoint,
+      arrowPoint: arrowPoint ?? this.arrowPoint,
+    );
+  }
 }
 
 class ArrowPoint {
   final List<Offset> arrowLIne;
   final Offset leftTipPoint;
   final Offset rightTipPoint;
-  ArrowPoint({
-    required this.arrowLIne,
-    required this.leftTipPoint,
-    required this.rightTipPoint,
-  });
+  final bool selected;
+  final bool hovered;
+  ArrowPoint(
+      {required this.arrowLIne,
+      required this.leftTipPoint,
+      required this.rightTipPoint,
+      this.selected = false,
+      this.hovered = false});
+
+  ArrowPoint copyWith(
+      {List<Offset>? arrowLIne,
+      Offset? leftTipPoint,
+      Offset? rightTipPoint,
+      bool? selected,
+      bool? hovered}) {
+    return ArrowPoint(
+        arrowLIne: arrowLIne ?? this.arrowLIne,
+        leftTipPoint: leftTipPoint ?? this.leftTipPoint,
+        rightTipPoint: rightTipPoint ?? this.rightTipPoint,
+        selected: selected ?? this.selected,
+        hovered: hovered ?? this.hovered);
+  }
 }
