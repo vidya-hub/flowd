@@ -11,13 +11,16 @@ class MathFun {
   static double findAngle({
     required Offset startingPoint,
     required Offset endingPoint,
+    bool inDegrees = true,
   }) {
     double angle = math.atan2(
       (endingPoint.dy - startingPoint.dy),
       (endingPoint.dx - startingPoint.dx),
     );
-    double conventionalAngle = getDegree(angle);
-    return conventionalAngle;
+    if (inDegrees) {
+      angle = getDegree(angle);
+    }
+    return angle;
   }
 
   static double getDegree(double radians) => (radians * 180) / math.pi;
@@ -53,5 +56,34 @@ class MathFun {
       offset.dy + distance * math.sin(getRadians(degrees)),
     );
     return newPoint;
+  }
+
+  static Offset getCenterPoint({
+    required Offset start,
+    required Offset end,
+  }) {
+    return (Offset((start.dx + end.dx) / 2, (start.dy + end.dy) / 2));
+  }
+
+  static double getPointsDistance({
+    required Offset start,
+    required Offset end,
+  }) {
+    return (end - start).distance.abs();
+  }
+
+  static Rect getRect({
+    required Offset start,
+    required Offset end,
+    double height = 0,
+  }) {
+    return Rect.fromPoints(start, end);
+  }
+
+  static Offset findPerpendicularPoint(Offset originalPoint) {
+    double newX = originalPoint.dy; // Swap x and y
+    double newY = -originalPoint.dx; // Negate one of the coordinates
+
+    return Offset(newX, newY);
   }
 }

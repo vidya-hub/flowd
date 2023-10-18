@@ -1,4 +1,3 @@
-import 'package:flowd/extensions/offset_extensions.dart';
 import 'package:flowd/painters/model/drawing_points.dart';
 import 'package:flowd/utils/math_fun.dart';
 import 'package:flutter/material.dart';
@@ -18,40 +17,39 @@ class PainterFun {
     ..strokeWidth = 5;
 
   static void drawBackGround(Canvas canvas, Size size) {
-    canvas.translate(size.width / 2, size.height / 2);
+    // canvas.translate(size.width / 2, size.height / 2);
 
     canvas.drawLine(
-      Offset(size.width / 2, 0).os(size),
-      Offset(size.width / 2, size.height).os(size),
+      Offset(size.width / 2, 0),
+      Offset(size.width / 2, size.height),
       coOrdinatePaint,
     );
 
     canvas.drawLine(
-      Offset(0, size.height / 2).os(size),
-      Offset(size.width, size.height / 2).os(size),
+      Offset(0, size.height / 2),
+      Offset(size.width, size.height / 2),
       coOrdinatePaint,
     );
   }
 
   static void drawArrowLine({
     required Canvas canvas,
-    required Size size,
     ArrowPoint? arrowPoint,
   }) {
     if (arrowPoint != null) {
       canvas.drawLine(
-        arrowPoint.arrowLIne.first.os(size),
-        arrowPoint.arrowLIne.last.os(size),
+        arrowPoint.arrowLIne.first,
+        arrowPoint.arrowLIne.last,
         (arrowPoint.hovered || arrowPoint.selected) ? pointPaint : linePaint,
       );
       canvas.drawLine(
-        arrowPoint.arrowLIne.last.os(size),
-        arrowPoint.leftTipPoint.os(size),
+        arrowPoint.arrowLIne.last,
+        arrowPoint.leftTipPoint,
         (arrowPoint.hovered || arrowPoint.selected) ? pointPaint : linePaint,
       );
       canvas.drawLine(
-        arrowPoint.arrowLIne.last.os(size),
-        arrowPoint.rightTipPoint.os(size),
+        arrowPoint.arrowLIne.last,
+        arrowPoint.rightTipPoint,
         (arrowPoint.hovered || arrowPoint.selected) ? pointPaint : linePaint,
       );
     }
@@ -103,12 +101,10 @@ class PainterFun {
     );
   }
 
-  static bool isPointBetween({
-    required Offset startPoint,
-    required Offset endPoint,
+  static bool inBoundingBox({
+    required Rect boundingBox,
     required Offset hoverPoint,
   }) {
-    Rect boundingBox = Rect.fromPoints(startPoint, endPoint);
     return boundingBox.contains(hoverPoint);
   }
 }

@@ -57,6 +57,14 @@ class PaintProvider extends ChangeNotifier {
           offset: offset,
         );
         arrowPoint = ArrowPoint(
+          boundingBox: MathFun.getRect(
+            start: startingPoint,
+            end: offset,
+            height: MathFun.getPointsDistance(
+              start: endingLeftOne,
+              end: endingRightOne,
+            ),
+          ),
           arrowLIne: [
             startingPoint,
             offset,
@@ -86,9 +94,8 @@ class PaintProvider extends ChangeNotifier {
     Offset hoverOffset,
   ) {
     DrawingPoint drawingData =
-        drawingPoints.firstWhere((point) => PainterFun.isPointBetween(
-              startPoint: point.arrowPoint!.arrowLIne.first,
-              endPoint: point.arrowPoint!.arrowLIne.last,
+        drawingPoints.firstWhere((point) => PainterFun.inBoundingBox(
+              boundingBox: point.arrowPoint!.boundingBox,
               hoverPoint: hoverOffset,
             ));
     return drawingData.arrowPoint;
@@ -101,9 +108,8 @@ class PaintProvider extends ChangeNotifier {
     if (drawingPoints.isNotEmpty) {
       List<DrawingPoint> drawingData = drawingPoints.map((point) {
         if (point.arrowPoint != null) {
-          bool inHoverRegion = PainterFun.isPointBetween(
-            startPoint: point.arrowPoint!.arrowLIne.first,
-            endPoint: point.arrowPoint!.arrowLIne.last,
+          bool inHoverRegion = PainterFun.inBoundingBox(
+            boundingBox: point.arrowPoint!.boundingBox,
             hoverPoint: hoverOffset,
           );
           point = point.copyWith(
