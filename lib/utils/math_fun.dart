@@ -72,12 +72,14 @@ class MathFun {
     return (end - start).distance.abs();
   }
 
-  static Rect getRect({
-    required Offset start,
-    required Offset end,
-    double height = 0,
+  static Path getBoundingPath({
+    required List<Offset> boundingPoints,
   }) {
-    return Rect.fromPoints(start, end);
+    return (Path()
+      ..addPolygon(
+        boundingPoints,
+        true,
+      ));
   }
 
   static Offset findPerpendicularPoint(Offset originalPoint) {

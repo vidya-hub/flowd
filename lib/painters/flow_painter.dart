@@ -1,11 +1,8 @@
 // import 'dart:math' as math;
 
-import 'dart:ui';
-
 import 'package:flowd/painters/model/drawing_points.dart';
 import 'package:flowd/providers/paint_provider.dart';
 import 'package:flowd/utils/enumns.dart';
-import 'package:flowd/utils/math_fun.dart';
 import 'package:flowd/utils/painter_fun.dart';
 import 'package:flutter/material.dart';
 
@@ -31,6 +28,12 @@ class FlowPainter extends CustomPainter {
     ..color = Colors.blue
     ..strokeWidth = 1
     ..style = PaintingStyle.stroke;
+  Paint selectionPaint = Paint()
+    ..isAntiAlias = true
+    ..color = Colors.white
+    ..strokeWidth = 0.1
+    ..style = PaintingStyle.stroke;
+
   double pointRadius = 3;
   FlowPainter({required this.provider});
 
@@ -45,6 +48,25 @@ class FlowPainter extends CustomPainter {
           pointRadius,
           pointPaint,
         );
+      }
+
+      if (provider.paintMode == PaintMode.select) {
+        for (var point in provider.drawingPoints) {
+          if (point.arrowPoint != null) {
+            bool isInBoundingBox = PainterFun.inBoundingBox(
+              boundingBox: point.arrowPoint!.boundingBox,
+              hoverPoint: hoverPoint,
+            );
+            if (isInBoundingBox) {
+              if (point.arrowPoint != null) {
+                canvas.drawPath(
+                  point.arrowPoint!.boundingBox,
+                  selectionPaint,
+                );
+              }
+            }
+          }
+        }
       }
       if (provider.drawingPoints.isNotEmpty &&
           provider.paintMode == PaintMode.line) {
@@ -66,33 +88,18 @@ class FlowPainter extends CustomPainter {
           canvas: canvas,
           arrowPoint: dp.arrowPoint,
         );
-        if (provider.drawingPoints[i].arrowPoint != null) {
-          canvas.drawPoints(
-              PointMode.points,
-              [
-                MathFun.getPointWithAngleWithDistance(
-                  degrees: 90,
-                  distance: 10,
-                  offset: dp.arrowPoint!.arrowLIne.first,
-                ),
-                MathFun.getPointWithAngleWithDistance(
-                  degrees: -90,
-                  distance: 10,
-                  offset: dp.arrowPoint!.arrowLIne.first,
-                )
-              ],
-              pointPaint);
-          // canvas.drawRect(
-          //   MathFun.getRect(
-          //     start: MathFun.getPointWithAngleWithDistance(
-          //       degrees: 90,
-          //       distance: 2,
-          //       offset: dp.arrowPoint!.arrowLIne.first,
-          //     ),
-          //     end: dp.arrowPoint!.rightTipPoint,
-          //   ),
-          //   linePaint,
-          // );
+        if (provider.drawingPoints[i].arrowPoint != null &&
+            provider.drawingPoints[i].arrowPoint!.selected) {
+          List<Offset> boundingPoints =
+              provider.drawingPoints[i].arrowPoint!.boundingBoxPoints;
+          canvas.drawPath(
+            (Path()
+              ..addPolygon(
+                boundingPoints,
+                true,
+              )),
+            rectPaint,
+          );
         }
       }
       if (provider.paintMode == PaintMode.select) {

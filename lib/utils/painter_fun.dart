@@ -102,9 +102,9 @@ class PainterFun {
   }
 
   static bool inBoundingBox({
-    required Rect boundingBox,
+    required Path boundingBox,
     required Offset hoverPoint,
   }) {
-    return boundingBox.contains(hoverPoint);
+    return boundingBox.getBounds().contains(hoverPoint);
   }
 }

@@ -12,6 +12,7 @@ class PaintProvider extends ChangeNotifier {
   Offset? get hoverPoint => _hoverPoint;
   ArrowPoint? _selectedData;
   ArrowPoint? get selectedArrow => _selectedData;
+  double boundingBoxHeight = 10;
   set setHoverPoint(Offset? hPoint) {
     _hoverPoint = hPoint;
     if (_paintMode == PaintMode.select) {
@@ -26,48 +27,75 @@ class PaintProvider extends ChangeNotifier {
   }
 
   List<DrawingPoint> get drawingPoints => _drawingPoints;
-  set addPoint(Offset offset) {
+  set addPoint(Offset endOffSet) {
     List<DrawingPoint> dPoints = [..._drawingPoints];
-    if (_paintMode == PaintMode.select) {
-      _selectedData = chooseArrow(offset);
-      notifyListeners();
-      // onSelectionHover(
-      //   offset,
-      //   isSelect: true,
-      // );
-    }
+    // if (_paintMode == PaintMode.select) {
+    //   _selectedData = chooseArrow(endOffSet);
+    //   notifyListeners();
+    //   // onSelectionHover(
+    //   //   offset,
+    //   //   isSelect: true,
+    //   // );
+    // }
     if (_paintMode == PaintMode.line) {
       ArrowPoint? arrowPoint;
       if (drawingPoints.isNotEmpty) {
         Offset startingPoint = drawingPoints.last.startingPoint;
         double currentAngle = MathFun.findAngle(
           startingPoint: startingPoint,
-          endingPoint: offset,
+          endingPoint: endOffSet,
         );
         double currentLeftAngle = currentAngle - 150;
         double currentRightAngle = currentAngle + 150;
+
         Offset endingLeftOne = MathFun.getPointWithAngleWithDistance(
           degrees: currentLeftAngle,
           distance: 20,
-          offset: offset,
+          offset: endOffSet,
         );
         Offset endingRightOne = MathFun.getPointWithAngleWithDistance(
           degrees: currentRightAngle,
           distance: 20,
-          offset: offset,
+          offset: endOffSet,
         );
+
+        // TODO: bounding box points gen
+
+        Offset boundingBoxLeftTopPoint = MathFun.getPointWithAngleWithDistance(
+          degrees: currentAngle - 90,
+          distance: boundingBoxHeight,
+          offset: startingPoint,
+        );
+        Offset boundingBoxBottomPoint = MathFun.getPointWithAngleWithDistance(
+          degrees: currentAngle + 90,
+          distance: boundingBoxHeight,
+          offset: startingPoint,
+        );
+        Offset boundingBoxRightTopPoint = MathFun.getPointWithAngleWithDistance(
+          degrees: currentAngle - 90,
+          distance: boundingBoxHeight,
+          offset: endOffSet,
+        );
+        Offset boundingBoxRightBottomPoint =
+            MathFun.getPointWithAngleWithDistance(
+          degrees: currentAngle + 90,
+          distance: boundingBoxHeight,
+          offset: endOffSet,
+        );
+        List<Offset> boundingPoints = [
+          boundingBoxLeftTopPoint,
+          boundingBoxBottomPoint,
+          boundingBoxRightBottomPoint,
+          boundingBoxRightTopPoint,
+        ];
         arrowPoint = ArrowPoint(
-          boundingBox: MathFun.getRect(
-            start: startingPoint,
-            end: offset,
-            height: MathFun.getPointsDistance(
-              start: endingLeftOne,
-              end: endingRightOne,
-            ),
+          boundingBoxPoints: boundingPoints,
+          boundingBox: MathFun.getBoundingPath(
+            boundingPoints: boundingPoints,
           ),
           arrowLIne: [
             startingPoint,
-            offset,
+            endOffSet,
           ],
           leftTipPoint: endingLeftOne,
           rightTipPoint: endingRightOne,
@@ -75,7 +103,7 @@ class PaintProvider extends ChangeNotifier {
       }
       dPoints.add(
         DrawingPoint(
-          startingPoint: offset,
+          startingPoint: endOffSet,
           arrowPoint: arrowPoint,
         ),
       );
@@ -93,11 +121,12 @@ class PaintProvider extends ChangeNotifier {
   ArrowPoint? chooseArrow(
     Offset hoverOffset,
   ) {
-    DrawingPoint drawingData =
-        drawingPoints.firstWhere((point) => PainterFun.inBoundingBox(
-              boundingBox: point.arrowPoint!.boundingBox,
-              hoverPoint: hoverOffset,
-            ));
+    DrawingPoint drawingData = drawingPoints.firstWhere(
+      (point) => PainterFun.inBoundingBox(
+        boundingBox: point.arrowPoint!.boundingBox,
+        hoverPoint: hoverOffset,
+      ),
+    );
     return drawingData.arrowPoint;
   }
 

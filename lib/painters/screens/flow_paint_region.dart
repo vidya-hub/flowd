@@ -27,6 +27,19 @@ class _FlowPaintRegionState extends State<FlowPaintRegion> {
           );
         },
         child: GestureDetector(
+          // onPanUpdate: (details) {
+          //   provider.setHoverPoint = renderBoxPosition(
+          //     details.globalPosition,
+          //     context,
+          //   );
+          // },
+          // onPanStart: (details) {
+          //   Offset tapPoint = renderBoxPosition(
+          //     details.globalPosition,
+          //     context,
+          //   );
+          //   provider.addPoint = tapPoint;
+          // },
           onTapDown: (details) {
             Offset tapPoint = renderBoxPosition(
               details.globalPosition,
