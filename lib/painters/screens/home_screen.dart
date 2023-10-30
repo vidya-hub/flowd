@@ -18,71 +18,102 @@ class _MyHomePageState extends State<MyHomePage> {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Consumer<PaintProvider>(builder: (context, paintProvider, _) {
-        return Column(
+      body: Consumer<PaintProvider>(builder: (
+        context,
+        paintProvider,
+        _,
+      ) {
+        return Stack(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Column(
               children: [
-                Text(
-                  "Selected Paint Mode ${paintModeData[paintProvider.paintMode]}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    color: Colors.white,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 20,
-                  ),
-                  child: Card(
-                    color: Colors.blueGrey,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: PaintMode.values
-                            .map(
-                              (paintMode) => Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 10,
-                                ),
-                                child: InkWell(
-                                  onTap: () {
-                                    paintProvider.setPaintMode = paintMode;
-                                  },
-                                  child: Chip(
-                                    backgroundColor:
-                                        paintMode == paintProvider.paintMode
-                                            ? Colors.blue
-                                            : Colors.white,
-                                    label: Text(
-                                      paintModeData[paintMode] ?? "",
-                                      style: TextStyle(
-                                          color: paintMode !=
-                                                  paintProvider.paintMode
-                                              ? Colors.blue
-                                              : Colors.white),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                            .toList(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Selected Paint Mode ${paintModeData[paintProvider.paintMode]}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        color: Colors.white,
                       ),
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 20,
+                      ),
+                      child: Card(
+                        color: Colors.blueGrey,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: PaintMode.values
+                                .map(
+                                  (paintMode) => Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 10,
+                                    ),
+                                    child: InkWell(
+                                      onTap: () {
+                                        paintProvider.setPaintMode = paintMode;
+                                      },
+                                      child: Chip(
+                                        backgroundColor:
+                                            paintMode == paintProvider.paintMode
+                                                ? Colors.blue
+                                                : Colors.white,
+                                        label: Text(
+                                          paintModeData[paintMode] ?? "",
+                                          style: TextStyle(
+                                              color: paintMode !=
+                                                      paintProvider.paintMode
+                                                  ? Colors.blue
+                                                  : Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  height: height * 0.8,
+                  width: width * 0.8,
+                  color: Colors.grey.shade800,
+                  child: const FlowPaintRegion(),
                 ),
               ],
             ),
-            Container(
-              height: height * 0.8,
-              width: width * 0.8,
-              color: Colors.grey.shade800,
-              child: const FlowPaintRegion(),
+            Positioned(
+              right: width * 0.01,
+              top: height * 0.4,
+              child: Column(
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      paintProvider.deleteSelected();
+                    },
+                    icon: const Icon(Icons.delete),
+                    label: const Text("Delete"),
+                  ),
+                  SizedBox(
+                    height: height * 0.02,
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.transform_rounded),
+                    label: const Text("Transform"),
+                  ),
+                ],
+              ),
             )
           ],
         );

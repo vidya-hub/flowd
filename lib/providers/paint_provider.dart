@@ -35,6 +35,14 @@ class PaintProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteSelected() {
+    var drawingPoints = [..._drawingPoints];
+    drawingPoints.removeWhere((element) =>
+        element.arrowPoint != null && element.arrowPoint!.selected);
+    _drawingPoints = drawingPoints;
+    notifyListeners();
+  }
+
   set setPaintMode(PaintMode paintMode) {
     _paintMode = paintMode;
     notifyListeners();
