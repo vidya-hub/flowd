@@ -10,13 +10,27 @@ class PaintProvider extends ChangeNotifier {
   PaintMode get paintMode => _paintMode;
   Offset? _hoverPoint;
   Offset? get hoverPoint => _hoverPoint;
-  ArrowPoint? _selectedData;
-  ArrowPoint? get selectedArrow => _selectedData;
+  int selectedArrows = 0;
+
   double boundingBoxHeight = 10;
   set setHoverPoint(Offset? hPoint) {
     _hoverPoint = hPoint;
-    if (_paintMode == PaintMode.select) {
-      // onSelectionHover(_hoverPoint!);
+    // handle hover for selection
+    if (_paintMode == PaintMode.select && _hoverPoint != null) {
+      for (var i = 0; i < _drawingPoints.length; i++) {
+        DrawingPoint point = _drawingPoints[i];
+        if (point.arrowPoint != null) {
+          bool isInBoundingBox = PainterFun.inBoundingBox(
+            boundingBox: point.arrowPoint!.boundingBox,
+            hoverPoint: _hoverPoint!,
+          );
+          if (point.arrowPoint != null) {
+            _drawingPoints[i] = point.copyWith(
+              arrowPoint: point.arrowPoint!.copyWith(hovered: isInBoundingBox),
+            );
+          }
+        }
+      }
     }
     notifyListeners();
   }
@@ -29,14 +43,7 @@ class PaintProvider extends ChangeNotifier {
   List<DrawingPoint> get drawingPoints => _drawingPoints;
   set addPoint(Offset endOffSet) {
     List<DrawingPoint> dPoints = [..._drawingPoints];
-    // if (_paintMode == PaintMode.select) {
-    //   _selectedData = chooseArrow(endOffSet);
-    //   notifyListeners();
-    //   // onSelectionHover(
-    //   //   offset,
-    //   //   isSelect: true,
-    //   // );
-    // }
+
     if (_paintMode == PaintMode.line) {
       ArrowPoint? arrowPoint;
       if (drawingPoints.isNotEmpty) {
@@ -109,6 +116,17 @@ class PaintProvider extends ChangeNotifier {
       );
       _drawingPoints = dPoints;
       notifyListeners();
+    } else if (_paintMode == PaintMode.select) {
+      _drawingPoints = _drawingPoints.map((element) {
+        if (element.arrowPoint != null && element.arrowPoint!.hovered) {
+          element = element.copyWith(
+            arrowPoint: element.arrowPoint!.copyWith(
+              selected: true,
+            ),
+          );
+        }
+        return element;
+      }).toList();
     }
   }
 

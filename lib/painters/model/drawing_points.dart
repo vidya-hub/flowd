@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class DrawingPoint {
   Offset startingPoint;
   ArrowPoint? arrowPoint;
+
   DrawingPoint({required this.startingPoint, this.arrowPoint});
 
   DrawingPoint copyWith({Offset? startingPoint, ArrowPoint? arrowPoint}) {

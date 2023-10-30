@@ -50,24 +50,6 @@ class FlowPainter extends CustomPainter {
         );
       }
 
-      if (provider.paintMode == PaintMode.select) {
-        for (var point in provider.drawingPoints) {
-          if (point.arrowPoint != null) {
-            bool isInBoundingBox = PainterFun.inBoundingBox(
-              boundingBox: point.arrowPoint!.boundingBox,
-              hoverPoint: hoverPoint,
-            );
-            if (isInBoundingBox) {
-              if (point.arrowPoint != null) {
-                canvas.drawPath(
-                  point.arrowPoint!.boundingBox,
-                  selectionPaint,
-                );
-              }
-            }
-          }
-        }
-      }
       if (provider.drawingPoints.isNotEmpty &&
           provider.paintMode == PaintMode.line) {
         canvas.drawLine(
@@ -88,31 +70,13 @@ class FlowPainter extends CustomPainter {
           canvas: canvas,
           arrowPoint: dp.arrowPoint,
         );
-        if (provider.drawingPoints[i].arrowPoint != null &&
-            provider.drawingPoints[i].arrowPoint!.selected) {
-          List<Offset> boundingPoints =
-              provider.drawingPoints[i].arrowPoint!.boundingBoxPoints;
+        if (dp.arrowPoint != null &&
+            provider.paintMode == PaintMode.select &&
+            (dp.arrowPoint!.hovered || dp.arrowPoint!.selected)) {
           canvas.drawPath(
-            (Path()
-              ..addPolygon(
-                boundingPoints,
-                true,
-              )),
-            rectPaint,
+            dp.arrowPoint!.boundingBox,
+            selectionPaint,
           );
-        }
-      }
-      if (provider.paintMode == PaintMode.select) {
-        if (provider.selectedArrow == null) {
-          canvas.drawRect(
-            Rect.fromCircle(
-              center: hoverPoint,
-              radius: 10,
-            ),
-            rectPaint,
-          );
-        } else {
-          // canvas.dra
         }
       }
     }
